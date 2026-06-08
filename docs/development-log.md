@@ -16,3 +16,10 @@
 - Configured Prisma seeding through prisma.config.ts.
 - Added a reusable Prisma client setup that avoids duplicate database connections during local Next.js hot reloads.
 - Verified the database setup using Prisma Studio.
+
+# Day 3 - App Shell and Design System
+- Create reusable marketing and dashboard layouts.
+- Add a lightweight design system foundation using Tailwind and shadcn/ui.
+- Build shared layout components such as containers, sections, page headers, and dashboard shell.
+- Refactor the homepage and dashboard to use reusable components.
+- Keep styling modular so the product can later support multiple verticals and visual themes.
