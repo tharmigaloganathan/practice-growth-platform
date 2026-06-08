@@ -1,0 +1,177 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum VerticalType {
+  WELLNESS
+  CONSTRUCTION
+  GENERAL
+}
+
+enum InquiryStatus {
+  NEW
+  REVIEWED
+  REPLIED
+  CONSULT_BOOKED
+  WAITLISTED
+  NOT_A_FIT
+  ARCHIVED
+}
+
+enum AnalyticsEventType {
+  PAGE_VIEWED
+  INQUIRY_STARTED
+  INQUIRY_SUBMITTED
+  INQUIRY_STATUS_CHANGED
+}
+
+model Tenant {
+  id        String       @id @default(cuid())
+  name      String
+  slug      String       @unique
+  vertical  VerticalType @default(WELLNESS)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  services        Service[]
+  forms           Form[]
+  inquiries       Inquiry[]
+  analyticsEvents AnalyticsEvent[]
+  auditLogs       AuditLog[]
+}
+
+model Service {
+  id          String  @id @default(cuid())
+  tenantId    String
+  name        String
+  slug        String
+  description String?
+  isActive    Boolean @default(true)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([tenantId, slug])
+  @@index([tenantId])
+}
+
+model Form {
+  id          String  @id @default(cuid())
+  tenantId    String
+  name        String
+  description String?
+  isActive    Boolean @default(true)
+
+  tenant   Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  versions FormVersion[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([tenantId])
+}
+
+model FormVersion {
+  id        String @id @default(cuid())
+  formId    String
+  version   Int
+  schema    Json
+
+  form        Form             @relation(fields: [formId], references: [id], onDelete: Cascade)
+  submissions FormSubmission[]
+
+  createdAt DateTime @default(now())
+
+  @@unique([formId, version])
+  @@index([formId])
+}
+
+model FormSubmission {
+  id            String @id @default(cuid())
+  formVersionId String
+  tenantId      String
+  data          Json
+
+  formVersion FormVersion @relation(fields: [formVersionId], references: [id], onDelete: Cascade)
+  inquiry     Inquiry?
+
+  createdAt DateTime @default(now())
+
+  @@index([tenantId])
+  @@index([formVersionId])
+}
+
+model Inquiry {
+  id               String        @id @default(cuid())
+  tenantId         String
+  formSubmissionId String?       @unique
+  status           InquiryStatus @default(NEW)
+
+  name    String?
+  email   String?
+  phone   String?
+  source  String?
+  summary String?
+
+  tenant         Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  formSubmission FormSubmission? @relation(fields: [formSubmissionId], references: [id], onDelete: SetNull)
+  statusEvents   InquiryStatusEvent[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([tenantId])
+  @@index([status])
+}
+
+model InquiryStatusEvent {
+  id        String        @id @default(cuid())
+  inquiryId String
+  fromStatus InquiryStatus?
+  toStatus   InquiryStatus
+  note      String?
+
+  inquiry Inquiry @relation(fields: [inquiryId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([inquiryId])
+}
+
+model AnalyticsEvent {
+  id        String             @id @default(cuid())
+  tenantId  String
+  type      AnalyticsEventType
+  path      String?
+  metadata  Json?
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([tenantId])
+  @@index([type])
+}
+
+model AuditLog {
+  id        String  @id @default(cuid())
+  tenantId  String
+  actorId   String?
+  action    String
+  targetId  String?
+  metadata  Json?
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([tenantId])
+  @@index([action])
+}

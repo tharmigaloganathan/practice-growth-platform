@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: practice_growth_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: practice_user
+      POSTGRES_PASSWORD: practice_password
+      POSTGRES_DB: practice_growth
+    ports:
+      - "5432:5432"
+    volumes:
+      - practice_growth_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  practice_growth_postgres_data:
