@@ -24,3 +24,11 @@
 - Connected the dashboard to seeded tenant data from PostgreSQL.
 - Added initial vertical configuration for the wellness vertical.
 - Documented the modular monolith architecture decision.
+
+# Day 4 - Inquiry form
+- Added React Hook Form and Zod for typed form state and validation.
+- Created initial reusable form schema types.
+- Added a code-based wellness consult request template.
+- Built a multi-step guided inquiry page for prospective wellness clients.
+- Added step-level validation, progress UI, and confirmation state.
+- Documented the decision to build one concrete inquiry flow before generalizing into a form builder.

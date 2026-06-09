@@ -7,6 +7,7 @@ type DashboardShellProps = {
 
 // The dashboard shell centralizes the authenticated app layout.
 // Auth is not wired yet, but keeping this separate makes Day 4/5 easier.
+//
 export function DashboardShell({ children }: DashboardShellProps) {
   return (
     <div className="min-h-screen bg-stone-50 text-stone-950">

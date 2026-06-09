@@ -6,6 +6,7 @@ type DashboardHeaderProps = {
 
 // Header pattern for dashboard pages.
 // Kept separate from marketing PageHeader because dashboard headings should be quieter.
+//
 export function DashboardHeader({
   eyebrow,
   title,
