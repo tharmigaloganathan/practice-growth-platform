@@ -32,3 +32,12 @@
 - Built a multi-step guided inquiry page for prospective wellness clients.
 - Added step-level validation, progress UI, and confirmation state.
 - Documented the decision to build one concrete inquiry flow before generalizing into a form builder.
+
+# Day 5 — Persist Guided Inquiries
+- Connected the client-side guided inquiry form to a Next.js server action.
+- Added server-side Zod validation for submitted inquiry data.
+- Queried the seeded demo tenant and active intake form through Prisma.
+- Saved validated form data as a FormSubmission record in PostgreSQL.
+- Created a dashboard-facing Inquiry record linked to the original form submission.
+- Updated the client flow to show confirmation only after the server action succeeds.
+- Verified that submitted inquiries appear in Prisma Studio and update dashboard metrics.

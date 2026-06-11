@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label"
 import { Progress } from "@/components/ui/progress"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Textarea } from "@/components/ui/textarea"
+import { createInquiryAction } from "@/features/inquiries/actions/create-inquiry-action"
 
 const inquirySchema = z.object({
   supportAreas: z.array(z.string()).min(1, "Choose at least one area of support."),
@@ -73,9 +74,19 @@ export function WellnessInquiryForm() {
     setCurrentStepIndex((index) => Math.max(index - 1, 0))
   }
 
-  function onSubmit(values: WellnessInquiryFormValues) {
-    console.log("Inquiry submitted", values)
-    setIsSubmitted(true)
+  async function onSubmit(values: WellnessInquiryFormValues) {
+      console.log("Client form values", values)
+
+      const result = await createInquiryAction(values)
+
+      console.log("Server action result", result)
+
+      if (!result.success) {
+          alert(result.error ?? "Something went wrong. Please try again.")
+          return
+      }
+
+      setIsSubmitted(true)
   }
 
   if (isSubmitted) {
